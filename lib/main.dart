@@ -24,38 +24,34 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  var color = Colors.black;
-  void _changeColor() {
-    setState(() {
-     if(color == Colors.black){
-       color = Colors.blue;
-     } else {
-       color = Colors.black;
-     }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Hey, Flutter',
-              style: TextStyle(fontSize: 50, color: color),
+      body: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [const Color(0xFF0E5CAD),
+                const Color(0xFF79F1A4),],
+                begin: FractionalOffset.bottomRight,
+                end: FractionalOffset.topLeft,
+              )
             ),
-          ],
+          )
+        ],
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 80.0),
+          child: FloatingActionButton(
+            child: Icon(Icons.play_arrow),
+            backgroundColor: Colors.white,
+            foregroundColor: Color(0xFF0E5CAD),
+            onPressed: () => null,
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _changeColor,
-        child: Icon(Icons.play_arrow),
-      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
