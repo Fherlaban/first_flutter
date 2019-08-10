@@ -1,57 +1,79 @@
 import 'package:flutter/material.dart';
+import 'package:english_words/english_words.dart';
 
-void main() => runApp(FirstFlutterApp());
+void main() => runApp(MyApp());
 
-class FirstFlutterApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: HomePage(title: 'First Flutter Practice'),
+      title: 'Startup Name Generator',
+      home: RandomWords(),
     );
   }
 }
 
-class HomePage extends StatefulWidget {
-  HomePage({Key key, this.title}) : super(key: key);
+class RandomWordsState extends State<RandomWords> {
+  final List<WordPair> _suggestions = <WordPair>[];
+  final Set<WordPair> _saved = Set<WordPair>();
+  final TextStyle _biggerFont = const TextStyle(fontSize: 18); 
 
-  final String title;
-
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [const Color(0xFF0E5CAD),
-                const Color(0xFF79F1A4),],
-                begin: FractionalOffset.bottomRight,
-                end: FractionalOffset.topLeft,
-              )
-            ),
-          )
-        ],
+    return Scaffold (
+      appBar: AppBar(
+        title: Text('Startup Name Generator'),
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 80.0),
-          child: FloatingActionButton(
-            child: Icon(Icons.play_arrow),
-            backgroundColor: Colors.white,
-            foregroundColor: Color(0xFF0E5CAD),
-            onPressed: () => null,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      body: _buildSuggestions(),
     );
   }
+
+  @override
+    Widget _buildRow(WordPair pair) {
+      final bool alreadySaved = _saved.contains(pair);
+      return ListTile(
+        title: Text(
+          pair.asPascalCase,
+          style: _biggerFont,
+        ),
+        trailing: Icon(
+          alreadySaved ? Icons.favorite : Icons.favorite_border,
+          color: alreadySaved ? Colors.red : null,
+        ),
+        onTap: () {
+          setState(() {
+          if (alreadySaved) {
+          _saved.remove(pair);
+            } else { 
+          _saved.add(pair); 
+            } 
+          });
+        },            
+      );
+  }
+  
+  Widget _buildSuggestions() {
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemBuilder: (BuildContext _context, int i) {
+        if (i.isOdd) {
+          return Divider();
+        }
+
+        final int index = i ~/ 2;
+
+        if (index >= _suggestions.length) {
+
+          _suggestions.addAll(generateWordPairs().take(10));
+        }
+        return _buildRow(_suggestions[index]);
+      }
+    );
+  }
+}
+
+
+class RandomWords extends StatefulWidget {
+  @override
+  RandomWordsState createState() => RandomWordsState();
 }
